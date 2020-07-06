@@ -447,7 +447,7 @@
             this.Font = new System.Drawing.Font("Microsoft Tai Le", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.Name = "SJF";
-            this.Text = "Shortest Job First";
+            this.Text = "Shortest Job First Scheduling";
             this.Load += new System.EventHandler(this.SJF_Load);
             ((System.ComponentModel.ISupportInitialize)(this.picWaiting)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picBusy)).EndInit();

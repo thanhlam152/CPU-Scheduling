@@ -86,7 +86,7 @@ namespace CPU_Scheduling
 
             if (rdPQ.Checked == true)
             {
-                PQ pq = new PQ();
+                PS pq = new PS();
                 pq.Numpro = Convert.ToInt32(txtNum.Text.Trim());
                 pq.Max = Convert.ToInt32(txtMax.Text.Trim());
                 pq.Min = Convert.ToInt32(txtMin.Text.Trim());

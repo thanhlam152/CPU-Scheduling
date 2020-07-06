@@ -63,9 +63,9 @@
             this.rdPQ.AutoSize = true;
             this.rdPQ.Location = new System.Drawing.Point(20, 151);
             this.rdPQ.Name = "rdPQ";
-            this.rdPQ.Size = new System.Drawing.Size(120, 21);
+            this.rdPQ.Size = new System.Drawing.Size(147, 21);
             this.rdPQ.TabIndex = 3;
-            this.rdPQ.Text = "Priority Queue";
+            this.rdPQ.Text = "Priority Scheduling";
             this.rdPQ.UseVisualStyleBackColor = true;
             // 
             // rdSJF

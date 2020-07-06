@@ -2,17 +2,21 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics.Eventing;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Timers;
+using System.Diagnostics;
 
 namespace CPU_Scheduling
 {
-    public partial class RR : Form
+    public partial class PS : Form
     {
-        public RR()
+        public PS()
         {
             InitializeComponent();
             picBusy.Hide();
@@ -36,10 +40,6 @@ namespace CPU_Scheduling
 
         private bool enabled = false;
 
-        private int QuantumTime = 1;
-
-        private int count = 0;
-
         Random rand = new Random();
         private int Normal(double mean, double stdDev, int max, int min)
         {
@@ -55,17 +55,18 @@ namespace CPU_Scheduling
                 double randNormal = mean + stdDev * randStdNormal; //random normal(mean,stdDev^2)
                 k = (int)Math.Floor(randNormal);
             }
+
             return k;
         }
 
 
-        Process[] prolist;
+        ProcessPQ[] prolist;
 
-        private List<Process> ArrivalQueue = new List<Process>();
+        private List<ProcessPQ> ArrivalQueue = new List<ProcessPQ>();
 
-        private List<Process> ReadyQueue = new List<Process>();
+        private List<ProcessPQ> ReadyQueue = new List<ProcessPQ>();
 
-        Process runProcess = null;
+        ProcessPQ runProcess = null;
 
         ProgressBar bar = new ProgressBar();
 
@@ -73,24 +74,25 @@ namespace CPU_Scheduling
 
         public void populate()
         {
-            prolist = new Process[Numpro];
+            prolist = new ProcessPQ[Numpro];
             Remain = new int[Numpro];
 
             for (int i = 0; i < Numpro; ++i)
             {
-                prolist[i] = new Process();
+                prolist[i] = new ProcessPQ();
 
                 double mean = (double)(Max + Min) / (double)2;
                 double stdDev = (double)(Max - Min) / (double)6;
                 prolist[i].Num = i;
                 prolist[i].Arrival = (ran) ? Normal(mean, stdDev, Max, Min) : 0;
                 prolist[i].Burst = (ran) ? Normal(mean, stdDev, Max, Min) : 1;
+                prolist[i].Prior = (ran) ? Normal(mean, stdDev, Max, Min) : 0;
 
                 flowLayoutPanel1.Controls.Add(prolist[i]);
             }
         }
 
-        private void EnqueueByArrival(Process process, List<Process> queue)
+        private void EnqueueByArrival(ProcessPQ process, List<ProcessPQ> queue)
         {
             if (queue.Count > 0)
             {
@@ -106,11 +108,27 @@ namespace CPU_Scheduling
             queue.Add(process);
         }
 
-        private Process Dequeue(List<Process> queue)
+        private void EnqueueByPriority(ProcessPQ process, List<ProcessPQ> queue)
         {
             if (queue.Count > 0)
             {
-                Process process = queue[0];
+                for (int i = 0; i < queue.Count; ++i)
+                {
+                    if (process.Prior > queue[i].Prior)
+                    {
+                        queue.Insert(i, process);
+                        return;
+                    }
+                }
+            }
+            queue.Add(process);
+        }
+
+        private ProcessPQ Dequeue(List<ProcessPQ> queue)
+        {
+            if (queue.Count > 0)
+            {
+                ProcessPQ process = queue[0];
                 queue.RemoveAt(0);
                 return process;
             }
@@ -124,11 +142,7 @@ namespace CPU_Scheduling
             enabled = true;
 
             flowLayoutPanel1.Enabled = false;
-            txtQuantum.Enabled = false;
-
-            QuantumTime = Convert.ToInt32(txtQuantum.Text);
-
-            foreach (Process process in prolist)
+            foreach (ProcessPQ process in prolist)
             {
                 int temp = process.Arrival;
                 Remain[process.Num] = process.Burst;
@@ -143,7 +157,8 @@ namespace CPU_Scheduling
 
             while (ArrivalQueue.Count > 0 && ArrivalQueue[0].Arrival == currentTime)
             {
-                ReadyQueue.Add(Dequeue(ArrivalQueue));
+                ProcessPQ temp = Dequeue(ArrivalQueue);
+                EnqueueByPriority(temp, ReadyQueue);
             }
 
             if (runProcess != null && Remain[runProcess.Num] == 0)
@@ -151,15 +166,6 @@ namespace CPU_Scheduling
                 runProcess.setWait(currentTime - runProcess.Burst - runProcess.Arrival);
                 totalWaitingTime += currentTime - runProcess.Burst - runProcess.Arrival;
                 totalTurnarroundTime += currentTime - runProcess.Arrival;
-                count = 0;
-                runProcess = null;
-            }
-
-            if (runProcess != null && count == QuantumTime)
-            {
-                runProcess.setWait(currentTime - runProcess.Arrival - (runProcess.Burst - Remain[runProcess.Num]));
-                ReadyQueue.Add(runProcess);
-                count = 0;
                 runProcess = null;
             }
 
@@ -176,8 +182,8 @@ namespace CPU_Scheduling
                 tableLayoutPanel1.Controls.Add(k1, i - 1, 0);
 
                 bar = new ProgressBar();
-                bar.Width = 25 * Math.Min(Remain[runProcess.Num], QuantumTime);
-                bar.Maximum = Math.Min(Remain[runProcess.Num], QuantumTime);
+                bar.Width = 25 * runProcess.Burst;
+                bar.Maximum = runProcess.Burst;
                 tableLayoutPanel1.Controls.Add(bar, i - 1, 1);
 
                 Label k2 = new Label();
@@ -191,7 +197,6 @@ namespace CPU_Scheduling
                 Remain[runProcess.Num] -= 1;
                 runProcess.proStatus.Value += 1;
                 bar.Value += 1;
-                count++;
             }
 
             if (runProcess == null && ArrivalQueue.Count == 0 && ReadyQueue.Count == 0)
@@ -205,12 +210,12 @@ namespace CPU_Scheduling
             lbQueue.Text = ReadyQueue.Count.ToString();
             lbStatus.Text = (runProcess == null) ? "Idle" : "Busy";
             lbCurrent.Text = "P" + ((runProcess == null) ? "" : runProcess.Num.ToString());
-            String waitingProcesses = "";
-            foreach (Process process in ReadyQueue)
+            String waitingProcessPQes = "";
+            foreach (ProcessPQ process in ReadyQueue)
             {
-                waitingProcesses += ("P" + process.Num.ToString() + "|");
+                waitingProcessPQes += ("P" + process.Num.ToString() + "|");
             }
-            lbWait.Text = waitingProcesses;
+            lbWait.Text = waitingProcessPQes;
 
             if (runProcess == null) { picBusy.Hide(); picWaiting.Show(); }
             else { picBusy.Show(); picWaiting.Hide(); }
@@ -243,18 +248,16 @@ namespace CPU_Scheduling
             }
 
             timer1.Stop();
-            ArrivalQueue = new List<Process>();
-            ReadyQueue = new List<Process>();
+            ArrivalQueue = new List<ProcessPQ>();
+            ReadyQueue = new List<ProcessPQ>();
             currentTime = -1;
             bar = new ProgressBar();
             runProcess = null;
             totalTurnarroundTime = 0;
             totalWaitingTime = 0;
-            count = 0;
-            txtQuantum.Enabled = true;
         }
 
-        private void RR_Load(object sender, EventArgs e)
+        private void PQ_Load(object sender, EventArgs e)
         {
             this.FormClosed += new FormClosedEventHandler(formclose);
         }

@@ -59,11 +59,11 @@
       <DependentUpon>EntryForm.cs</DependentUpon>
     </Compile>
     <Compile Include="LoadBar.cs" />
-    <Compile Include="PQ.cs">
+    <Compile Include="PS.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PQ.Designer.cs">
-      <DependentUpon>PQ.cs</DependentUpon>
+    <Compile Include="PS.Designer.cs">
+      <DependentUpon>PS.cs</DependentUpon>
     </Compile>
     <Compile Include="Process.cs">
       <SubType>UserControl</SubType>
@@ -97,8 +97,8 @@
     <EmbeddedResource Include="EntryForm.resx">
       <DependentUpon>EntryForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PQ.resx">
-      <DependentUpon>PQ.cs</DependentUpon>
+    <EmbeddedResource Include="PS.resx">
+      <DependentUpon>PS.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Process.resx">
       <DependentUpon>Process.cs</DependentUpon>

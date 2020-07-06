@@ -1,6 +1,6 @@
 ﻿namespace CPU_Scheduling
 {
-    partial class RR
+    partial class PS
     {
         /// <summary>
         /// Required designer variable.
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RR));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PS));
             this.label1 = new System.Windows.Forms.Label();
             this.lbWait = new System.Windows.Forms.Label();
             this.splitter1 = new System.Windows.Forms.Splitter();
@@ -61,8 +61,7 @@
             this.label8 = new System.Windows.Forms.Label();
             this.lbTurn = new System.Windows.Forms.Label();
             this.btnRestart = new System.Windows.Forms.Button();
-            this.txtQuantum = new System.Windows.Forms.TextBox();
-            this.label9 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.picWaiting)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picBusy)).BeginInit();
             this.SuspendLayout();
@@ -125,7 +124,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(11, 163);
+            this.label4.Location = new System.Drawing.Point(11, 123);
             this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(98, 18);
@@ -135,7 +134,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(12, 200);
+            this.label5.Location = new System.Drawing.Point(12, 160);
             this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(77, 18);
@@ -145,7 +144,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(6, 239);
+            this.label6.Location = new System.Drawing.Point(6, 199);
             this.label6.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(105, 18);
@@ -170,7 +169,7 @@
             this.lbQueue.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.lbQueue.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lbQueue.Font = new System.Drawing.Font("Microsoft Tai Le", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbQueue.Location = new System.Drawing.Point(131, 155);
+            this.lbQueue.Location = new System.Drawing.Point(131, 115);
             this.lbQueue.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lbQueue.Name = "lbQueue";
             this.lbQueue.Size = new System.Drawing.Size(88, 26);
@@ -183,7 +182,7 @@
             this.lbStatus.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.lbStatus.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lbStatus.Font = new System.Drawing.Font("Microsoft Tai Le", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbStatus.Location = new System.Drawing.Point(131, 192);
+            this.lbStatus.Location = new System.Drawing.Point(131, 152);
             this.lbStatus.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lbStatus.Name = "lbStatus";
             this.lbStatus.Size = new System.Drawing.Size(88, 26);
@@ -196,7 +195,7 @@
             this.lbCurrent.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.lbCurrent.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lbCurrent.Font = new System.Drawing.Font("Microsoft Tai Le", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbCurrent.Location = new System.Drawing.Point(131, 231);
+            this.lbCurrent.Location = new System.Drawing.Point(131, 191);
             this.lbCurrent.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lbCurrent.Name = "lbCurrent";
             this.lbCurrent.Size = new System.Drawing.Size(88, 26);
@@ -219,7 +218,7 @@
             this.label11.BackColor = System.Drawing.SystemColors.Control;
             this.label11.Font = new System.Drawing.Font("Century Gothic", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label11.ForeColor = System.Drawing.Color.Teal;
-            this.label11.Location = new System.Drawing.Point(368, 78);
+            this.label11.Location = new System.Drawing.Point(355, 78);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(59, 17);
             this.label11.TabIndex = 14;
@@ -231,7 +230,7 @@
             this.label12.BackColor = System.Drawing.SystemColors.Control;
             this.label12.Font = new System.Drawing.Font("Century Gothic", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label12.ForeColor = System.Drawing.Color.Teal;
-            this.label12.Location = new System.Drawing.Point(433, 78);
+            this.label12.Location = new System.Drawing.Point(420, 78);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(87, 17);
             this.label12.TabIndex = 15;
@@ -243,7 +242,7 @@
             this.label13.BackColor = System.Drawing.SystemColors.Control;
             this.label13.Font = new System.Drawing.Font("Century Gothic", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label13.ForeColor = System.Drawing.Color.Teal;
-            this.label13.Location = new System.Drawing.Point(537, 78);
+            this.label13.Location = new System.Drawing.Point(513, 78);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(75, 17);
             this.label13.TabIndex = 16;
@@ -255,7 +254,7 @@
             this.label14.BackColor = System.Drawing.SystemColors.Control;
             this.label14.Font = new System.Drawing.Font("Century Gothic", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label14.ForeColor = System.Drawing.Color.Teal;
-            this.label14.Location = new System.Drawing.Point(634, 78);
+            this.label14.Location = new System.Drawing.Point(652, 78);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(96, 17);
             this.label14.TabIndex = 17;
@@ -411,33 +410,24 @@
             this.btnRestart.UseVisualStyleBackColor = true;
             this.btnRestart.Click += new System.EventHandler(this.btnRestart_Click);
             // 
-            // txtQuantum
+            // label7
             // 
-            this.txtQuantum.Font = new System.Drawing.Font("Microsoft Tai Le", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtQuantum.Location = new System.Drawing.Point(131, 114);
-            this.txtQuantum.Name = "txtQuantum";
-            this.txtQuantum.Size = new System.Drawing.Size(88, 29);
-            this.txtQuantum.TabIndex = 58;
-            this.txtQuantum.Text = "1";
-            this.txtQuantum.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.label7.AutoSize = true;
+            this.label7.BackColor = System.Drawing.SystemColors.Control;
+            this.label7.Font = new System.Drawing.Font("Century Gothic", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label7.ForeColor = System.Drawing.Color.Teal;
+            this.label7.Location = new System.Drawing.Point(594, 78);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(52, 17);
+            this.label7.TabIndex = 55;
+            this.label7.Text = "Priority";
             // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(12, 121);
-            this.label9.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(100, 18);
-            this.label9.TabIndex = 57;
-            this.label9.Text = "Quantum Time";
-            // 
-            // RR
+            // PS
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(959, 626);
-            this.Controls.Add(this.txtQuantum);
-            this.Controls.Add(this.label9);
+            this.Controls.Add(this.label7);
             this.Controls.Add(this.btnRestart);
             this.Controls.Add(this.lbTurn);
             this.Controls.Add(this.label8);
@@ -470,9 +460,9 @@
             this.Controls.Add(this.label1);
             this.Font = new System.Drawing.Font("Microsoft Tai Le", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
-            this.Name = "RR";
-            this.Text = "Round Robin Scheduling";
-            this.Load += new System.EventHandler(this.RR_Load);
+            this.Name = "PS";
+            this.Text = "Priority Scheduling";
+            this.Load += new System.EventHandler(this.PQ_Load);
             ((System.ComponentModel.ISupportInitialize)(this.picWaiting)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picBusy)).EndInit();
             this.ResumeLayout(false);
@@ -513,7 +503,6 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label lbTurn;
         private System.Windows.Forms.Button btnRestart;
-        private System.Windows.Forms.TextBox txtQuantum;
-        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label label7;
     }
 }

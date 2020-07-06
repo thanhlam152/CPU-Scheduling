@@ -448,7 +448,7 @@
             this.Font = new System.Drawing.Font("Microsoft Tai Le", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.Name = "FCFS";
-            this.Text = "First Come First Serve";
+            this.Text = "First Come First Serve Scheduling";
             this.Load += new System.EventHandler(this.FCFS_Load);
             ((System.ComponentModel.ISupportInitialize)(this.picWaiting)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picBusy)).EndInit();
