@@ -152,9 +152,11 @@ namespace CPU_Scheduling
             Process k = new Process();
             k = p1;
             Label k1 = new Label();
+            k1.AutoSize = true;
             Label k2 = new Label();
+            k2.AutoSize = true;
             k1.Text = "P" + p1.Num.ToString();
-            k2.Text = "Start time " + p1.Start.ToString();
+            k2.Text = p1.Start.ToString();
             LoadBar newload = new LoadBar();
             newload.Max = k.Burst;
             int i = tableLayoutPanel1.ColumnCount++;
@@ -215,8 +217,6 @@ namespace CPU_Scheduling
                         lbCurrent.Text = "P" + prolist[i].Num.ToString();
 
                     }
-
-
                 }
                 int numqueue = 0;
                 for (int k = 0; k < Numpro; k++)
@@ -224,7 +224,7 @@ namespace CPU_Scheduling
                     { waitpro += "P" + dosched[k].Num.ToString() + "|"; numqueue++; }
                 lbWait.Text = waitpro; lbQueue.Text = numqueue.ToString();
                 if (counttime < wait ) { lbStatus.Text = "Busy"; picBusy.Show(); picWaiting.Hide(); }
-                else if(counttime<endtime) { lbStatus.Text = "Wait"; picBusy.Hide(); picWaiting.Show(); }
+                else if(counttime<endtime) { lbStatus.Text = "Idle"; picBusy.Hide(); picWaiting.Show(); }
 
 
                 if (counttime == endtime+1) { timer1.Stop(); lbStatus.Text = "Idle"; picBusy.Hide(); picWaiting.Show();lbCurrent.Text = "non";
@@ -278,7 +278,7 @@ namespace CPU_Scheduling
         }
         private void formclose(object sender, EventArgs e)
         {
-            Form1 k = new Form1();
+            EntryForm k = new EntryForm();
             k.Show();
         }
     }

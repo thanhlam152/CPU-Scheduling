@@ -58,9 +58,9 @@ namespace CPU_Scheduling
 
         Process[] prolist;
 
-        private List<Process> arrivingQueue = new List<Process>();
+        private List<Process> ArrivalQueue = new List<Process>();
 
-        private List<Process> waitingQueue = new List<Process>();
+        private List<Process> ReadyQueue = new List<Process>();
 
         Process runProcess = null;
 
@@ -71,7 +71,7 @@ namespace CPU_Scheduling
         public void populate()
         {
             prolist = new Process[Numpro];
-            Remain = new int[Numpro + 1];
+            Remain = new int[Numpro];
             
             for (int i = 0; i < Numpro; ++i)
             {
@@ -79,7 +79,7 @@ namespace CPU_Scheduling
 
                 double mean = (double)(Max + Min) / (double)2;
                 double stdDev = (double)(Max - Min) / (double)6;
-                prolist[i].Num = i + 1;
+                prolist[i].Num = i;
                 prolist[i].Arrival = (ran) ? Normal(mean, stdDev, Max, Min) : 0;
                 prolist[i].Burst = (ran) ? Normal(mean, stdDev, Max, Min) : 1;
 
@@ -141,7 +141,7 @@ namespace CPU_Scheduling
             {
                 int temp = process.Arrival;
                 Remain[process.Num] = process.Burst;
-                EnqueueByArrival(process, arrivingQueue);
+                EnqueueByArrival(process, ArrivalQueue);
             }
             timer1.Start();
         }
@@ -150,10 +150,10 @@ namespace CPU_Scheduling
         {
             currentTime++;
 
-            while (arrivingQueue.Count > 0 && arrivingQueue[0].Arrival == currentTime)
+            while (ArrivalQueue.Count > 0 && ArrivalQueue[0].Arrival == currentTime)
             {
-                Process temp = Dequeue(arrivingQueue);
-                EnqueueByBurst(temp, waitingQueue);
+                Process temp = Dequeue(ArrivalQueue);
+                EnqueueByBurst(temp, ReadyQueue);
             }
 
             if (runProcess != null && Remain[runProcess.Num] == 0)
@@ -164,14 +164,15 @@ namespace CPU_Scheduling
                 runProcess = null;
             }
 
-            if (runProcess == null && waitingQueue.Count > 0)
+            if (runProcess == null && ReadyQueue.Count > 0)
             {
-                runProcess = Dequeue(waitingQueue);
+                runProcess = Dequeue(ReadyQueue);
                 runProcess.proStatus.Maximum = runProcess.Burst;
 
                 int i = tableLayoutPanel1.ColumnCount++;
 
                 Label k1 = new Label();
+                k1.AutoSize = true;
                 k1.Text = "P" + runProcess.Num.ToString();
                 tableLayoutPanel1.Controls.Add(k1, i - 1, 0);
 
@@ -181,7 +182,8 @@ namespace CPU_Scheduling
                 tableLayoutPanel1.Controls.Add(bar, i - 1, 1);
 
                 Label k2 = new Label();
-                k2.Text = "Start time " + currentTime.ToString();
+                k2.AutoSize = true;
+                k2.Text = currentTime.ToString();
                 tableLayoutPanel1.Controls.Add(k2, i - 1, 2);
             }
 
@@ -192,7 +194,7 @@ namespace CPU_Scheduling
                 bar.Value += 1;
             }
 
-            if (runProcess == null && arrivingQueue.Count == 0 && waitingQueue.Count == 0)
+            if (runProcess == null && ArrivalQueue.Count == 0 && ReadyQueue.Count == 0)
             {
                 timer1.Stop();
                 lbWaitT.Text = Math.Round((double)totalWaitingTime / (double)Numpro, 2).ToString();
@@ -200,11 +202,11 @@ namespace CPU_Scheduling
             }
 
             lbClock.Text = currentTime.ToString();
-            lbQueue.Text = waitingQueue.Count.ToString();
+            lbQueue.Text = ReadyQueue.Count.ToString();
             lbStatus.Text = (runProcess == null) ? "Idle" : "Busy";
             lbCurrent.Text = "P" + ((runProcess == null) ? "" : runProcess.Num.ToString());
             String waitingProcesses = "";
-            foreach (Process process in waitingQueue)
+            foreach (Process process in ReadyQueue)
             {
                 waitingProcesses += ("P" + process.Num.ToString() + "|");
             }
@@ -241,8 +243,8 @@ namespace CPU_Scheduling
             }
 
             timer1.Stop();
-            arrivingQueue = new List<Process>();
-            waitingQueue = new List<Process>();
+            ArrivalQueue = new List<Process>();
+            ReadyQueue = new List<Process>();
             currentTime = -1;
             bar = new ProgressBar();
             runProcess = null;
@@ -256,7 +258,7 @@ namespace CPU_Scheduling
         }
         private void formclose(object sender, EventArgs e)
         {
-            Form1 k = new Form1();
+            EntryForm k = new EntryForm();
             k.Show();
         }
     }

@@ -71,3 +71,19 @@ D:\CPU Scheduling\CPU_Scheduling\obj\Debug\CPU_Scheduling.csproj.GenerateResourc
 D:\CPU Scheduling\CPU_Scheduling\obj\Debug\CPU_Scheduling.csproj.CoreCompileInputs.cache
 D:\CPU Scheduling\CPU_Scheduling\obj\Debug\CPU_Scheduling.exe
 D:\CPU Scheduling\CPU_Scheduling\obj\Debug\CPU_Scheduling.pdb
+D:\Downloads\CPU-Scheduling-master\CPU_Scheduling\bin\Debug\CPU_Scheduling.exe.config
+D:\Downloads\CPU-Scheduling-master\CPU_Scheduling\bin\Debug\CPU_Scheduling.exe
+D:\Downloads\CPU-Scheduling-master\CPU_Scheduling\bin\Debug\CPU_Scheduling.pdb
+D:\Downloads\CPU-Scheduling-master\CPU_Scheduling\obj\Debug\CPU_Scheduling.csprojAssemblyReference.cache
+D:\Downloads\CPU-Scheduling-master\CPU_Scheduling\obj\Debug\CPU_Scheduling.FCFS.resources
+D:\Downloads\CPU-Scheduling-master\CPU_Scheduling\obj\Debug\CPU_Scheduling.PQ.resources
+D:\Downloads\CPU-Scheduling-master\CPU_Scheduling\obj\Debug\CPU_Scheduling.Process.resources
+D:\Downloads\CPU-Scheduling-master\CPU_Scheduling\obj\Debug\CPU_Scheduling.ProcessPQ.resources
+D:\Downloads\CPU-Scheduling-master\CPU_Scheduling\obj\Debug\CPU_Scheduling.Properties.Resources.resources
+D:\Downloads\CPU-Scheduling-master\CPU_Scheduling\obj\Debug\CPU_Scheduling.SJF.resources
+D:\Downloads\CPU-Scheduling-master\CPU_Scheduling\obj\Debug\CPU_Scheduling.csproj.GenerateResource.cache
+D:\Downloads\CPU-Scheduling-master\CPU_Scheduling\obj\Debug\CPU_Scheduling.csproj.CoreCompileInputs.cache
+D:\Downloads\CPU-Scheduling-master\CPU_Scheduling\obj\Debug\CPU_Scheduling.exe
+D:\Downloads\CPU-Scheduling-master\CPU_Scheduling\obj\Debug\CPU_Scheduling.pdb
+D:\Downloads\CPU-Scheduling-master\CPU_Scheduling\obj\Debug\CPU_Scheduling.EntryForm.resources
+D:\Downloads\CPU-Scheduling-master\CPU_Scheduling\obj\Debug\CPU_Scheduling.RR.resources

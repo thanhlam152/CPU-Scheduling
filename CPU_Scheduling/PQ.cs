@@ -19,20 +19,30 @@ namespace CPU_Scheduling
         public PQ()
         {
             InitializeComponent();
-            
             picBusy.Hide();
             picWaiting.Show();
         }
+
+
+        public bool ran = false;
+
         public int Numpro;
 
         public int Max;
 
         public int Min;
-        public bool ran = false;
-        
+
+        private int currentTime = -1;
+
+        private int totalTurnarroundTime = 0;
+
+        private int totalWaitingTime = 0;
+
+        private bool enabled = false;
+
         Random rand = new Random();
         private int Normal(double mean, double stdDev, int max, int min)
-        {   
+        {
             int k = max + 1;
             while (k > max || k < min)
             {
@@ -44,289 +54,177 @@ namespace CPU_Scheduling
 
                 double randNormal = mean + stdDev * randStdNormal; //random normal(mean,stdDev^2)
                 k = (int)Math.Floor(randNormal);
-
             }
 
             return k;
-
         }
+
+
         ProcessPQ[] prolist;
-       
+
+        private List<ProcessPQ> ArrivalQueue = new List<ProcessPQ>();
+
+        private List<ProcessPQ> ReadyQueue = new List<ProcessPQ>();
+
+        ProcessPQ runProcess = null;
+
+        ProgressBar bar = new ProgressBar();
+
+        int[] Remain;
+
         public void populate()
         {
-            listbar = new LoadBarPQ[Numpro];
             prolist = new ProcessPQ[Numpro];
-            double mean = (double)(Max + Min) / (double)2;
-            double stdDev = (double)(Max - Min) / (double)6;
+            Remain = new int[Numpro];
 
-            for (int i = 0; i < Numpro; i++)
-
+            for (int i = 0; i < Numpro; ++i)
             {
                 prolist[i] = new ProcessPQ();
+
+                double mean = (double)(Max + Min) / (double)2;
+                double stdDev = (double)(Max - Min) / (double)6;
                 prolist[i].Num = i;
-                if (ran == true)
-                {
-                    prolist[i].Arrival = Normal(mean, stdDev, Max, Min);
-                    prolist[i].Burst = Normal(mean, stdDev, Max, Min);
-                    prolist[i].Prior = Normal(mean, stdDev, Max, Min);
-                }
-                else
-                {
-                    prolist[i].Arrival = 0;
-                    prolist[i].Burst = 1;
-                    prolist[i].Prior = 1;
-                }
+                prolist[i].Arrival = (ran) ? Normal(mean, stdDev, Max, Min) : 0;
+                prolist[i].Burst = (ran) ? Normal(mean, stdDev, Max, Min) : 1;
+                prolist[i].Prior = (ran) ? Normal(mean, stdDev, Max, Min) : 0;
+
                 flowLayoutPanel1.Controls.Add(prolist[i]);
             }
-
         }
-        double avg_Turnaround = 0;
-        double avg_WaitT = 0;
-        
-        public void Sched()
+
+        private void EnqueueByArrival(ProcessPQ process, List<ProcessPQ> queue)
         {
-          
-            int total_Turnaround = 0;
-            int total_WaitT = 0;
-            int total_Response = 0;
-            int total_idle_time = 0;
-            
-            int[] burst_remaining = new int[Numpro];
-
-            int[] is_completed = new int[Numpro];
-            for (int i=0;i<Numpro;i++)
+            if (queue.Count > 0)
             {
-                burst_remaining[i] = prolist[i].Burst;
-                is_completed[i] = 0;
+                for (int i = 0; i < queue.Count; ++i)
+                {
+                    if (process.Arrival < queue[i].Arrival)
+                    {
+                        queue.Insert(i, process);
+                        return;
+                    }
+                }
             }
-            
+            queue.Add(process);
+        }
 
-            int current_time = 0;
-            int completed = 0;
-            int prev = 0;
-
-            while (completed < Numpro)
+        private void EnqueueByPriority(ProcessPQ process, List<ProcessPQ> queue)
+        {
+            if (queue.Count > 0)
             {
-                int idx = -1;
-                int mx = int.MaxValue;
-                for (int i = 0; i < Numpro; i++)
+                for (int i = 0; i < queue.Count; ++i)
                 {
-                    if ((prolist[i].Arrival <= current_time) && (is_completed[i] == 0))
+                    if (process.Prior > queue[i].Prior)
                     {
-                        if (prolist[i].Prior < mx)
-                        {
-                            mx = prolist[i].Prior;
-                            idx = i;
-                        }
-                        if (prolist[i].Prior == mx)
-                        {
-                            if (prolist[i].Arrival < prolist[idx].Arrival)
-                            {
-                                mx = prolist[i].Prior;
-                                idx = i;
-                            }
-                        }
+                        queue.Insert(i, process);
+                        return;
                     }
                 }
-
-                if (idx != -1)
-                {
-                    if (burst_remaining[idx] == prolist[idx].Burst)
-                    {
-                        prolist[idx].Start = current_time;
-                        total_idle_time += prolist[idx].Start - prev;
-                    }
-                    burst_remaining[idx] -= 1;
-                    current_time++;
-                    prev = current_time;
-
-                    if (burst_remaining[idx] == 0)
-                    {
-                        prolist[idx].End = current_time;
-                        prolist[idx].Turnaround = prolist[idx].End - prolist[idx].Arrival;
-                        prolist[idx].WaitT = prolist[idx].Turnaround - prolist[idx].Burst;
-                        prolist[idx].Response = prolist[idx].Start - prolist[idx].Arrival;
-
-                        total_Turnaround += prolist[idx].Turnaround;
-                        total_WaitT += prolist[idx].WaitT;
-                        total_Response += prolist[idx].Response;
-
-                        is_completed[idx] = 1;
-                        completed++;
-                    }
-                    
-                }
-                else
-                {
-                    current_time++;
-                }
-
             }
-            avg_Turnaround = Math.Round((double)total_Turnaround /(double)Numpro,2);
-            avg_WaitT = Math.Round((double)total_WaitT / (double)Numpro, 2);
-            //string la = "";
-            //for (int i=0;i<Numpro;i++)
+            queue.Add(process);
+        }
 
+        private ProcessPQ Dequeue(List<ProcessPQ> queue)
+        {
+            if (queue.Count > 0)
+            {
+                ProcessPQ process = queue[0];
+                queue.RemoveAt(0);
+                return process;
+            }
+            else return null;
         }
 
         private void btnStart_Click(object sender, EventArgs e)
-        {  
-            
+        {
+            if (enabled) return;
+
+            enabled = true;
+
             flowLayoutPanel1.Enabled = false;
-            timer1.Tick -= timer1_Tick;
-            Simulate();
-
-        }
-        LoadBarPQ[] listbar;
-        int[] burst_remain;
-        private void prostart(ProcessPQ p1)
-        {
-            ProcessPQ k = new ProcessPQ();
-            k = p1;
-            listbar[p1.Num] = new LoadBarPQ();
-            listbar[p1.Num].Max = k.Burst;
-            listbar[p1.Num].setMax();
-            Label k1 = new Label();
-            Label k2 = new Label();
-            k1.Text = "P" + p1.Num.ToString();
-            k2.Text = "Start Time " + p1.Start.ToString();
-            int i = tableLayoutPanel1.ColumnCount++;
-            tableLayoutPanel1.Controls.Add(k1, i - 1, 0);
-            tableLayoutPanel1.Controls.Add(listbar[p1.Num].b1, i-1, 1);
-            tableLayoutPanel1.Controls.Add(k2, i - 1, 2);
-            k.proStart();
-            listbar[p1.Num].proStart();
-        }
-        private void prostop(ProcessPQ p1)
-        {  
-            p1.proStop();
-            listbar[p1.Num].proStop();
-        }
-        private void proresume(ProcessPQ p1)
-        {
-            p1.proStart();
-            listbar[p1.Num].proStart();
-        }
-        private void Simulate()
-        {
-            Sched();
-            counttime = 0;
-            burst_remain = new int[Numpro];
-            for (int i=0;i<Numpro;i++)
+            foreach (ProcessPQ process in prolist)
             {
-                burst_remain[i] = prolist[i].Burst;
+                int temp = process.Arrival;
+                Remain[process.Num] = process.Burst;
+                EnqueueByArrival(process, ArrivalQueue);
             }
-            for(int i=0;i<Numpro;i++)
-            {
-                if (endtime < prolist[i].End) endtime = prolist[i].End;
-            }
-            //dosched = new ProcessPQ[Numpro];dosched = prolist;
-
-            //for (int k = 0; k < Numpro; k++)
-            //{
-            //    for (int i = k + 1; i < Numpro; i++)
-            //    {
-            //        if (dosched[k].Prior > dosched[i].Prior)
-            //        {
-            //            ProcessPQ temp = new ProcessPQ();
-            //            temp = dosched[i];
-            //            dosched[i] = dosched[k];
-            //            dosched[k] = temp;
-            //        }
-            //    }
-            //}
-            timer1.Tick += timer1_Tick;
-            timer1.Interval = 1000;
             timer1.Start();
-
         }
-        int counttime = 0;
-        int currentpro = -1;
-        
-        int determine = 0;
-        int endtime = 0;
+
         private void timer1_Tick(object sender, EventArgs e)
         {
-            lbClock.Text = counttime.ToString();
-            if(determine==1)
-            {
-                for (int k = 0; k < Numpro; k++)
-                {
-                    if (counttime > prolist[k].Start && burst_remain[k] > 0 && k != currentpro) prostop(prolist[k]);
-                    
-                }
-                determine = 0;
-            }
-            for (int i = 0; i < Numpro; i++)
-            {
-                if (prolist[i].Start == counttime)
-                {
-                    currentpro = i; prostart(prolist[i]); determine = 1; picBusy.Show();picWaiting.Hide(); lbStatus.Text = "Busy";
+            currentTime++;
 
-                }
-            }
-            if (currentpro > -1)
+            while (ArrivalQueue.Count > 0 && ArrivalQueue[0].Arrival == currentTime)
             {
-                if (burst_remain[currentpro]-1 == 0) prolist[currentpro].setWait(prolist[currentpro].WaitT);
-                string waitqueue = "";
-                int numqueue = 0;
-                for (int i=0;i<Numpro;i++)
-                {
-                    if(burst_remain[i]>0 && i!=currentpro)
-                    {
-                        waitqueue += "P"+prolist[i].Num.ToString()+"|";numqueue++;
-                    }
-                }
-                lbWait.Text = waitqueue;
-                lbCurrent.Text= "P" + currentpro.ToString(); ;
-                lbQueue.Text = numqueue.ToString();
-                if (burst_remain[currentpro] == 0)
-                {
-                    
-                    //int[] lastprocess = new int[Numpro];
-                    int t = 0;
-
-                    for (int i = 0; i < Numpro; i++)
-                    {
-                        if (burst_remain[i] > 0 /*&& prolist[i].Prior< prolist[currentpro].Prior*/ && counttime>prolist[i].Start)
-                        {   if (t == 0) { currentpro = i; t++; }
-                            else if (prolist[i].Prior < prolist[currentpro].Prior) currentpro = i;
-                           
-                        }
-                        
-                    }
-                    if (t == 0 &&counttime<endtime) { picWaiting.Show(); picBusy.Hide(); lbStatus.Text = "Waiting"; }
-                    //int min = lastprocess[0];
-                    //for(int i=0;i<num;i++)
-                    //{
-                    //    if(min<)
-                    //}
-                    proresume(prolist[currentpro]);
-                }
-                burst_remain[currentpro]--; 
+                ProcessPQ temp = Dequeue(ArrivalQueue);
+                EnqueueByPriority(temp, ReadyQueue);
             }
-            //if (counttime == 3) prostart(prolist[0]);
-            //if (counttime == 4) prostop(prolist[0]);
-            //if (counttime == 7) prostop(prolist[0]);
-            //if (counttime == 10) proresume(prolist[0]);
-            if (counttime == endtime+1) 
-                { 
-                    timer1.Stop();
-                    picWaiting.Show(); 
-                    picBusy.Hide();
-                    lbWaitT.Text = avg_WaitT.ToString();
-                    lbTurn.Text = avg_Turnaround.ToString();
-                    lbStatus.Text = "Idle";
-                    lbCurrent.Text = "non";
-               
-                 }
-            counttime++;
+
+            if (runProcess != null && Remain[runProcess.Num] == 0)
+            {
+                runProcess.setWait(currentTime - runProcess.Burst - runProcess.Arrival);
+                totalWaitingTime += currentTime - runProcess.Burst - runProcess.Arrival;
+                totalTurnarroundTime += currentTime - runProcess.Arrival;
+                runProcess = null;
+            }
+
+            if (runProcess == null && ReadyQueue.Count > 0)
+            {
+                runProcess = Dequeue(ReadyQueue);
+                runProcess.proStatus.Maximum = runProcess.Burst;
+
+                int i = tableLayoutPanel1.ColumnCount++;
+
+                Label k1 = new Label();
+                k1.AutoSize = true;
+                k1.Text = "P" + runProcess.Num.ToString();
+                tableLayoutPanel1.Controls.Add(k1, i - 1, 0);
+
+                bar = new ProgressBar();
+                bar.Width = 25 * runProcess.Burst;
+                bar.Maximum = runProcess.Burst;
+                tableLayoutPanel1.Controls.Add(bar, i - 1, 1);
+
+                Label k2 = new Label();
+                k2.AutoSize = true;
+                k2.Text = currentTime.ToString();
+                tableLayoutPanel1.Controls.Add(k2, i - 1, 2);
+            }
+
+            if (runProcess != null)
+            {
+                Remain[runProcess.Num] -= 1;
+                runProcess.proStatus.Value += 1;
+                bar.Value += 1;
+            }
+
+            if (runProcess == null && ArrivalQueue.Count == 0 && ReadyQueue.Count == 0)
+            {
+                timer1.Stop();
+                lbWaitT.Text = Math.Round((double)totalWaitingTime / (double)Numpro, 2).ToString();
+                lbTurn.Text = Math.Round((double)totalTurnarroundTime / (double)Numpro, 2).ToString();
+            }
+
+            lbClock.Text = currentTime.ToString();
+            lbQueue.Text = ReadyQueue.Count.ToString();
+            lbStatus.Text = (runProcess == null) ? "Idle" : "Busy";
+            lbCurrent.Text = "P" + ((runProcess == null) ? "" : runProcess.Num.ToString());
+            String waitingProcessPQes = "";
+            foreach (ProcessPQ process in ReadyQueue)
+            {
+                waitingProcessPQes += ("P" + process.Num.ToString() + "|");
+            }
+            lbWait.Text = waitingProcessPQes;
+
+            if (runProcess == null) { picBusy.Hide(); picWaiting.Show(); }
+            else { picBusy.Show(); picWaiting.Hide(); }
         }
 
         private void btnRestart_Click(object sender, EventArgs e)
         {
+            enabled = false;
             flowLayoutPanel1.Enabled = true;
-            timer1.Tick -= timer1_Tick;
             picBusy.Hide(); picWaiting.Show();
             lbClock.Text = "0";
             lbQueue.Text = "0";
@@ -343,26 +241,30 @@ namespace CPU_Scheduling
             tableLayoutPanel1.ColumnStyles.Clear();
             tableLayoutPanel1.ColumnCount = 1;
 
-
             for (int i = 0; i < Numpro; i++)
-
             {
                 prolist[i].stop();
-
                 flowLayoutPanel1.Controls.Add(prolist[i]);
             }
+
+            timer1.Stop();
+            ArrivalQueue = new List<ProcessPQ>();
+            ReadyQueue = new List<ProcessPQ>();
+            currentTime = -1;
+            bar = new ProgressBar();
+            runProcess = null;
+            totalTurnarroundTime = 0;
+            totalWaitingTime = 0;
         }
 
         private void PQ_Load(object sender, EventArgs e)
         {
             this.FormClosed += new FormClosedEventHandler(formclose);
         }
-       
         private void formclose(object sender, EventArgs e)
         {
-            Form1 k = new Form1();
+            EntryForm k = new EntryForm();
             k.Show();
         }
     }
-
 }

@@ -314,9 +314,9 @@
             this.label19.Location = new System.Drawing.Point(28, 570);
             this.label19.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(41, 17);
+            this.label19.Size = new System.Drawing.Size(73, 17);
             this.label19.TabIndex = 24;
-            this.label19.Text = "Time";
+            this.label19.Text = "Start Time";
             // 
             // btnStart
             // 
@@ -448,7 +448,7 @@
             this.Font = new System.Drawing.Font("Microsoft Tai Le", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.Name = "FCFS";
-            this.Text = "FCFS";
+            this.Text = "First Come First Serve";
             this.Load += new System.EventHandler(this.FCFS_Load);
             ((System.ComponentModel.ISupportInitialize)(this.picWaiting)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picBusy)).EndInit();
